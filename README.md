@@ -340,7 +340,7 @@ docker-compose up -d
 docker-compose up -d --scale worker=3
 ```
 
-### 📊 Monitor Services
+### 🐳 Monitor Services
 ```bash
 # View logs
 docker-compose logs -f
@@ -350,43 +350,6 @@ docker-compose ps
 
 # Stop services
 docker-compose down
-```
-
-### ☁️ Production Deployment
-
-#### 🌐 Render.com (Recommended)
-1. **Web Service**: API server deployment
-2. **Background Worker**: Separate worker service
-3. **Redis**: Use Redis Cloud add-on
-
-#### 🐳 Docker Container
-Build and run custom Docker images for production environments.
-
-## 🚀 Quick Start
-
-### 1️⃣ API Server Only
-```bash
-cd API && npm install && npm start
-```
-
-### 2️⃣ With Queue Workers
-```bash
-# Start Redis, API server, and workers
-redis-server &
-cd API
-USE_QUEUE=true npm start &
-RUN_WORKER=true npm run worker
-```
-
-### 3️⃣ Full Stack (API + Frontend)
-```bash
-# API (see above) + Frontend
-streamlit run app.py
-```
-
-### 4️⃣ Docker Compose (Everything)
-```bash
-cd API && docker-compose up -d
 ```
 
 ## 📊 Monitoring & Scaling
