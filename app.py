@@ -85,70 +85,11 @@ def valid_url(url: str) -> bool:
 
 
 def call_process_api(media_url: str):
-	print(f"🚀 Starting API call for media URL: {media_url}")
-	
-	# Submit job to queue
 	endpoint = f"{API_BASE_URL}/upload-audio"
 	payload = {"audioUrl": media_url}
-	print(f"📡 Submitting job to endpoint: {endpoint}")
-	print(f"📦 Payload: {payload}")
-	
 	resp = requests.post(endpoint, json=payload, headers=HEADERS, timeout=120)
 	resp.raise_for_status()
-	result = resp.json()
-	print(f"✅ Initial response: {result}")
-	
-	# If job is queued, poll for completion
-	if result.get("queued") and result.get("jobId"):
-		job_id = result["jobId"]
-		job_endpoint = f"{API_BASE_URL}/jobs/{job_id}"
-		print(f"⏳ Job queued with ID: {job_id}")
-		print(f"🔍 Will poll endpoint: {job_endpoint}")
-		
-		# Poll for job completion (max 2 minutes)
-		import time
-		max_attempts = 24  # 24 * 5 seconds = 2 minutes
-		print(f"⏱️ Starting polling loop (max {max_attempts} attempts, 5s intervals)")
-		
-		for attempt in range(max_attempts):
-			print(f"🔄 Polling attempt {attempt + 1}/{max_attempts}")
-			time.sleep(5)  # Wait 5 seconds between checks
-			
-			try:
-				job_resp = requests.get(job_endpoint, headers=HEADERS, timeout=30)
-				job_resp.raise_for_status()
-				job_data = job_resp.json()
-				print(f"📊 Job status: {job_data.get('state', 'unknown')}")
-				
-				if job_data.get("state") == "completed":
-					print("🎉 Job completed successfully!")
-					job_result = job_data.get("result", {})
-					print(f"📝 Transcript length: {len(job_result.get('transcript', ''))}")
-					print(f"🧠 Insights keys: {list(job_result.get('insights', {}).keys())}")
-					return {
-						"success": True,
-						"transcript": job_result.get("transcript", ""),
-						"insights": job_result.get("insights", {})
-					}
-				elif job_data.get("state") == "failed":
-					print("❌ Job failed!")
-					raise RuntimeError("Job processing failed")
-				
-				print(f"⏳ Job still processing (state: {job_data.get('state', 'unknown')})")
-				
-			except Exception as e:
-				print(f"⚠️ Polling error on attempt {attempt + 1}: {e}")
-				if attempt == max_attempts - 1:  # Last attempt
-					raise RuntimeError(f"Job polling failed: {e}")
-				continue
-		
-		# Timeout
-		print("⏰ Job polling timeout!")
-		raise RuntimeError("Job processing timeout after 2 minutes")
-	
-	# Direct response (non-queued)
-	print("🔄 Direct processing (non-queued)")
-	return result
+	return resp.json()
 
 
 def render_dashboard():
