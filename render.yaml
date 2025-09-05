@@ -1,16 +1,16 @@
 services:
-  # Redis service
+  # Redis service (free tier)
   - type: redis
     name: echostream-redis
-    plan: starter
+    plan: free
     region: oregon
     ipAllowList: []
 
-  # Main API service
+  # Main API service (free tier)
   - type: web
     name: echostream-api
     runtime: docker
-    plan: starter
+    plan: free
     region: oregon
     rootDir: API
     envVars:
@@ -34,11 +34,11 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
-  # Worker service
+  # Worker service (free tier)
   - type: worker
     name: echostream-worker
     runtime: docker
-    plan: starter
+    plan: free
     region: oregon
     rootDir: API
     envVars:
