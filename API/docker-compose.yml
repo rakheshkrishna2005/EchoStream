@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    image: echostream-api:compose
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - USE_QUEUE=true
+      - API_BEARER_TOKEN=${API_BEARER_TOKEN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
+    depends_on:
+      - redis
+    ports:
+      - "3000:3000"
+    command: ["node", "server.cluster.js"]
+
+  worker:
+    image: echostream-api:compose
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - WORKER_CONCURRENCY=${WORKER_CONCURRENCY:-2}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - RUN_WORKER=${RUN_WORKER:-true}
+    depends_on:
+      - redis
+    command: ["node", "services/worker.js"]

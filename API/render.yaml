@@ -1,0 +1,54 @@
+services:
+  # Redis service
+  - type: redis
+    name: echostream-redis
+    plan: starter
+    region: oregon
+
+  # Main API service
+  - type: web
+    name: echostream-api
+    runtime: docker
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: echostream-redis
+          property: connectionString
+      - key: USE_QUEUE
+        value: true
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: WORKER_CONCURRENCY
+        value: 2
+      - key: API_BEARER_TOKEN
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # Worker service
+  - type: worker
+    name: echostream-worker
+    runtime: docker
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: echostream-redis
+          property: connectionString
+      - key: RUN_WORKER
+        value: true
+      - key: WORKER_CONCURRENCY
+        value: 2
+      - key: GEMINI_API_KEY
+        sync: false
