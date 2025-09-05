@@ -13,7 +13,6 @@
 - [🔌 WebSocket API](#-websocket-api-socketio)
 - [🖥️ Streamlit Frontend](#️-streamlit-frontend)
 - [🐳 Docker Deployment](#-docker-deployment)
-- [🚀 Quick Start](#-quick-start)
 - [📊 Monitoring & Scaling](#-monitoring--scaling)
 
 ### ✨ Features
