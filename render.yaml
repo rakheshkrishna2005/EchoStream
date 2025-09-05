@@ -4,6 +4,7 @@ services:
     name: echostream-redis
     plan: starter
     region: oregon
+    ipAllowList: []
 
   # Main API service
   - type: web
