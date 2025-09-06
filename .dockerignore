@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+Dockerfile*
+.git
+.gitignore
+.temp
+.env
+*.local
+**/*.mp3
+**/*.mp4
+**/temp
+**/temp/**
